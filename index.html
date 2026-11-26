@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16479b">
+<title>Biblioteca digitală | CRED ÎN EDUCAȚIE</title>
+<style>
+:root{--blue:#16479b;--gold:#e6ad22;--ink:#17233b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:linear-gradient(135deg,#eef4ff,#fff9e9);min-height:100vh}
+header{background:#fff;text-align:center;padding:22px 16px 17px;border-bottom:4px solid var(--gold);box-shadow:0 3px 16px #14284a18}.brand{font-weight:900;letter-spacing:.08em;color:var(--blue);font-size:clamp(19px,3vw,27px)}.tagline{margin-top:7px;color:#59657a;font-size:14px}
+main{max-width:1200px;margin:24px auto;padding:0 16px 36px}.intro{text-align:center;margin-bottom:18px}h1{font-size:clamp(23px,4vw,34px);color:#163d82;margin:0 0 8px}.intro p{margin:0;color:#59657a}
+.toolbar{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}button,.action{border:0;border-radius:999px;padding:11px 18px;background:var(--blue);color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.action.light{background:#fff;color:var(--blue);border:1px solid #cbd7ee}.action.upload{background:#fff;color:var(--blue);border:1px dashed var(--blue)}input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}.status{text-align:center;min-height:22px;color:#52627b;font-size:14px;margin:8px 0 12px}.viewer{background:#dce6f7;border:1px solid #c8d6ed;border-radius:18px;padding:12px;box-shadow:0 14px 35px #1c37631c}iframe{display:block;width:100%;height:min(76vh,900px);min-height:480px;border:0;border-radius:9px;background:white}.hint{text-align:center;color:#5d6b80;font-size:13px;margin:12px 4px 2px}footer{text-align:center;padding:18px;color:#6b7485;font-size:12px}@media(max-width:600px){main{padding:0 9px 25px}.viewer{padding:5px}iframe{height:70vh;min-height:420px}.action,button{padding:10px 13px;font-size:13px}}
+</style></head>
+<body>
+<header><div class="brand">CRED ÎN EDUCAȚIE</div><div class="tagline">Învăț cu sens. Gândesc cu încredere. Cresc prin descoperire.</div></header>
+<main>
+<section class="intro"><h1 id="book-title">România – O călătorie în culori</h1><p>Deschide, răsfoiește și descoperă cărțile bibliotecii digitale.</p></section>
+<div class="toolbar">
+<label class="action upload" for="pdf-upload">＋ Încarcă altă carte (PDF)</label>
+<input id="pdf-upload" type="file" accept=".pdf,application/pdf">
+<a class="action light" id="download" href="romania-o-calatorie-in-culori.pdf" download>Descarcă PDF</a>
+<button class="action light" id="fullscreen" type="button">⛶ Ecran complet</button>
+</div>
+<div class="status" id="status" role="status" aria-live="polite">Se pregătește biblioteca…</div>
+<section class="viewer" id="viewer"><iframe id="pdf-viewer" title="Vizualizator PDF" src="romania-o-calatorie-in-culori.pdf"></iframe></section>
+<p class="hint">Pentru a încărca o altă carte, selectează un fișier PDF de pe dispozitiv. Navigarea în pagini și zoomul sunt disponibile în bara vizualizatorului PDF.</p>
+</main><footer>Biblioteca digitală CRED ÎN EDUCAȚIE · Material educațional pentru utilizare personală și la clasă</footer>
+<script>
+(() => {
+ const input=document.getElementById('pdf-upload');
+ const frame=document.getElementById('pdf-viewer');
+ const title=document.getElementById('book-title');
+ const status=document.getElementById('status');
+ const download=document.getElementById('download');
+ const viewer=document.getElementById('viewer');
+ let activeUrl=null;
+ const defaultName='romania-o-calatorie-in-culori.pdf';
+ function setStatus(message){status.textContent=message;}
+ function showPdf(url,name,isLocal){
+   frame.src=url;
+   title.textContent=name;
+   download.href=url;
+   download.download=(name||'carte').replace(/[^\p{L}\p{N}._ -]+/gu,'_')+'.pdf';
+   setStatus('Document încărcat: '+name+'. Dacă previzualizarea nu apare, folosește butonul „Descarcă PDF”.');
+ }
+ input.addEventListener('change',()=>{
+   const file=input.files && input.files[0];
+   if(!file)return;
+   if(file.type!=='application/pdf' && !file.name.toLowerCase().endsWith('.pdf')){
+     setStatus('Fișierul selectat nu este PDF. Alege un document cu extensia .pdf.');input.value='';return;
+   }
+   if(activeUrl)URL.revokeObjectURL(activeUrl);
+   activeUrl=URL.createObjectURL(file);
+   const name=file.name.replace(/\.pdf$/i,'').replace(/[_-]+/g,' ');
+   showPdf(activeUrl,name,false);
+ });
+ document.getElementById('fullscreen').addEventListener('click',async()=>{
+   try{if(!document.fullscreenElement)await viewer.requestFullscreen();else await document.exitFullscreen();}
+   catch(e){setStatus('Ecranul complet nu este disponibil în acest browser.');}
+ });
+ window.addEventListener('beforeunload',()=>{if(activeUrl)URL.revokeObjectURL(activeUrl);});
+ frame.addEventListener('load',()=>{if(status.textContent==='Se pregătește biblioteca…')setStatus('Biblioteca este pregătită.');});
+ frame.addEventListener('error',()=>setStatus('Previzualizarea nu a putut fi încărcată. Descarcă PDF-ul pentru a-l deschide.'));
+})();
+</script></body></html>

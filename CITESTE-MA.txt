@@ -1,0 +1,10 @@
+CRED ÎN EDUCAȚIE – BIBLIOTECA DIGITALĂ
+
+1. Dezarhivează întregul ZIP într-un folder.
+2. Păstrează index.html și PDF-ul în același folder.
+3. Deschide index.html în Chrome sau Edge.
+4. Pentru altă carte, apasă „Încarcă altă carte (PDF)” și selectează un PDF.
+
+Această versiune folosește vizualizatorul PDF integrat în browser, fără biblioteci JavaScript externe. Astfel, funcțiile de afișare și încărcare nu depind de accesul la CDN-uri.
+
+Pentru publicare online, încarcă pe Netlify conținutul folderului dezarhivat, nu arhiva ZIP. Nu redenumi separat index.html sau PDF-ul implicit.
